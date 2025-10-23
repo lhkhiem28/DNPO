@@ -3,28 +3,7 @@ import tqdm
 from datasets import load_dataset
 from datasets import Dataset
 from vllm import LLM, SamplingParams
-
-llm_judge_prompt_template = """
-You are tasked with evaluating the quality of the given answer based on the provided question. \
-Your task is to assign a score between 1 and 100, where 1 indicates very poor quality and 100 indicates excellent quality. \
-You should use a 1-point increment scale, meaning the score can be any whole number between 1 and 100 and avoiding scores that are always multiples of 5. \
-Consider factors such as relevance, clarity, completeness, and correctness. Provide only the score without any explanation. 
-Question: [question]
-Answer: [answer]
-Score: 
-"""
-
-def llm_judge(judge_prompt):
-    from openai import OpenAI
-    client = OpenAI()
-    response = client.chat.completions.create(
-        model="gpt-5-mini",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": judge_prompt}
-        ],
-    )
-    return response.choices[0].message.content.strip()
+import llm_blender
 
 if __name__ == "__main__":
 
@@ -33,11 +12,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     dataset = load_dataset(
-        f"lhkhiem28/ultrafeedback-DNPO-iter{args.iter}"
+        f"lhkhiem28/ultrafeedback-iter{args.iter}"
     )["train_prefs"]
     dataset_next = []
 
-    generator = LLM(model=f"lhkhiem28/DNPO-iter{args.iter}", tensor_parallel_size=1)
+    generator = LLM(model=f"lhkhiem28/Mistral-7B-Instruct-v0.2-DNPO-iter{args.iter}", tensor_parallel_size=1)
+    blender = llm_blender.Blender()
+    blender.loadranker("llm-blender/PairRM")
 
     batch_size = 32
     for i in tqdm.tqdm(range(0, len(dataset), batch_size)):
@@ -50,29 +31,19 @@ if __name__ == "__main__":
         for j, output in enumerate(outputs):
             batch["rejected"][j][1]["content"] = output.outputs[0].text
 
+        swaps = blender.compare(prompts, [rejected[1]["content"] for rejected in batch["rejected"]], [chosen[1]["content"] for chosen in batch["chosen"]])
         for j in range(len(batch["prompt"])):
-            swap = False
-            prompt, prompt_id = prompts[j], prompts_id[j]
             chosen, rejected = batch["chosen"][j], batch["rejected"][j]
-
-            chosen_judge_prompt, rejected_judge_prompt = llm_judge_prompt_template.replace("[question]", prompt).replace("[answer]", chosen[1]["content"]), llm_judge_prompt_template.replace("[question]", prompt).replace("[answer]", rejected[1]["content"])
-            chosen_score, rejected_score = llm_judge(chosen_judge_prompt), llm_judge(rejected_judge_prompt)
-            try:
-                chosen_score, rejected_score = float(chosen_score), float(rejected_score)
-                if rejected_score > chosen_score:
-                    swap = True
-                    chosen, rejected = rejected, chosen
-                    chosen_score, rejected_score = rejected_score, chosen_score
-            except:
-                chosen_score, rejected_score = -1, -1
+            if swaps[j]:
+                chosen, rejected = rejected, chosen
 
             dataset_next.append({
-                "prompt": prompt, "prompt_id": prompt_id, 
+                "prompt": prompts[j], "prompt_id": prompts_id[j], 
                 "chosen": chosen, "rejected": rejected, 
-                "chosen_score": chosen_score, "rejected_score": rejected_score, 
-                "swap_preferences": swap, 
+                "swap_preferences": swaps[j], 
             })
 
         Dataset.from_list(dataset_next).push_to_hub(
-            f"lhkhiem28/ultrafeedback-DNPO-iter{args.iter+1}"
+            f"lhkhiem28/ultrafeedback-DNPO-iter{args.iter}"
         )
+        break

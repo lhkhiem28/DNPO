@@ -1,5 +1,5 @@
 # Model arguments
-model_name_or_path: lhkhiem28/Mistral-7B-Instruct-v0.2-DNPO-iter0
+model_name_or_path: lhkhiem28/zephyr-7b-sft-iter0
 model_revision: main
 torch_dtype: bfloat16
 attn_implementation: flash_attention_2
@@ -7,7 +7,7 @@ attn_implementation: flash_attention_2
 # Data training arguments
 dataset_mixture:
   datasets:
-    - id: lhkhiem28/ultrafeedback-DNPO-iter0
+    - id: lhkhiem28/ultrafeedback-sft-iter1
       config: default
       split: train_prefs
       columns:
@@ -36,8 +36,8 @@ logging_steps: 5
 save_strategy: "steps"
 save_steps: 100
 save_total_limit: 1
-output_dir: output/zephyr-7b-sft-iter0
+output_dir: output/zephyr-7b-sft-iter1
 overwrite_output_dir: true
 push_to_hub: true
-hub_model_id: zephyr-7b-sft-iter0
+hub_model_id: zephyr-7b-sft-iter1
 hub_strategy: every_save
