@@ -1,0 +1,44 @@
+# Model arguments
+model_name_or_path: lhkhiem28/Mistral-7B-Instruct-v0.2-DNPO-iter0
+torch_dtype: null
+
+# Data training arguments
+dataset_mixture:
+  datasets:
+    - id: lhkhiem28/ultrafeedback-DNPO-iter0
+      config: default
+      split: train_prefs           
+      columns:
+        - chosen
+        - rejected
+      weight: 1.0
+  seed: 0
+max_prompt_length: 512
+max_length: 1024
+dataset_num_proc: 16
+
+# DPOTrainer arguments
+seed: 42
+bf16: true
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: False
+gradient_accumulation_steps: 2
+optim: adamw_torch
+learning_rate: 5.0e-7
+lr_scheduler_type: cosine
+warmup_ratio: 0.1
+per_device_train_batch_size: 8
+num_train_epochs: 2
+beta: 0.01
+log_level: info
+logging_strategy: steps
+logging_steps: 5
+save_strategy: "steps"
+save_steps: 100
+save_total_limit: 1
+output_dir: output/zephyr-7b-dnpo-iter0
+overwrite_output_dir: true
+push_to_hub: true
+hub_model_id: zephyr-7b-dnpo-iter0
+hub_strategy: every_save
