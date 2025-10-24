@@ -1,5 +1,5 @@
 echo "Running iter1"
-python gen_data.py --dataset "lhkhiem28/ultrafeedback-iter1" --model "Qwen/Qwen2.5-0.5B-Instruct" --dataset_next "lhkhiem28/ultrafeedback-dpo-iter1"
+python gen_data.py --dataset "lhkhiem28/ultrafeedback-iter1" --model "Qwen/Qwen2.5-1.5B-Instruct" --dataset_next "lhkhiem28/ultrafeedback-dpo-iter1"
 sleep 1m
 ACCELERATE_LOG_LEVEL=info accelerate launch --config_file recipes/accelerate_configs/zero3.yaml scripts/dpo.py --config recipes/zephyr-7b-beta/dpo/config_iter1.yaml
 sleep 1m

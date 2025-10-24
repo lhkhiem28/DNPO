@@ -1,23 +1,23 @@
 # Model arguments
 model_name_or_path: Qwen/Qwen2.5-1.5B-Instruct
-torch_dtype: null
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
 
 # Data training arguments
 dataset_mixture:
   datasets:
-    - id: lhkhiem28/ultrafeedback-dpo-iter1
+    - id: lhkhiem28/ultrafeedback-sft-iter2
       config: default
-      split: train           
+      split: train
       columns:
-        - chosen
-        - rejected
+        - messages
       weight: 1.0
   seed: 0
-max_prompt_length: 512
-max_length: 1024
+max_length: 2048
 dataset_num_proc: 16
 
-# DPOTrainer arguments
+# SFT trainer config
 seed: 42
 bf16: true
 gradient_checkpointing: true
@@ -25,20 +25,19 @@ gradient_checkpointing_kwargs:
   use_reentrant: False
 gradient_accumulation_steps: 2
 optim: adamw_torch
-learning_rate: 5.0e-7
+learning_rate: 2.0e-05
 lr_scheduler_type: cosine
 warmup_ratio: 0.1
-per_device_train_batch_size: 8
+per_device_train_batch_size: 16
 num_train_epochs: 2
-beta: 0.01
 log_level: info
 logging_strategy: steps
 logging_steps: 5
 save_strategy: "steps"
 save_steps: 100
 save_total_limit: 1
-output_dir: output/zephyr-7b-dpo-iter1
+output_dir: output/zephyr-7b-sft-iter2
 overwrite_output_dir: true
 push_to_hub: true
-hub_model_id: zephyr-7b-dpo-iter1
+hub_model_id: zephyr-7b-sft-iter2
 hub_strategy: every_save

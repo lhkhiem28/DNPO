@@ -5,7 +5,7 @@ torch_dtype: null
 # Data training arguments
 dataset_mixture:
   datasets:
-    - id: lhkhiem28/ultrafeedback-dpo-iter1
+    - id: lhkhiem28/ultrafeedback-dpo-iter3
       config: default
       split: train           
       columns:
@@ -37,8 +37,8 @@ logging_steps: 5
 save_strategy: "steps"
 save_steps: 100
 save_total_limit: 1
-output_dir: output/zephyr-7b-dpo-iter1
+output_dir: output/zephyr-7b-dpo-iter3
 overwrite_output_dir: true
 push_to_hub: true
-hub_model_id: zephyr-7b-dpo-iter1
+hub_model_id: zephyr-7b-dpo-iter3
 hub_strategy: every_save
