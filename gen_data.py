@@ -40,6 +40,7 @@ if __name__ == "__main__":
             dataset_next.append({
                 "prompt": prompts[j], "prompt_id": prompts_id[j], 
                 "chosen": chosen, "rejected": rejected, 
+                "messages": chosen, 
                 "swap_preferences": swaps[j], 
             })
 

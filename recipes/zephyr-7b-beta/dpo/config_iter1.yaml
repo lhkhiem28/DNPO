@@ -7,7 +7,7 @@ dataset_mixture:
   datasets:
     - id: lhkhiem28/ultrafeedback-dpo-iter1
       config: default
-      split: train_prefs           
+      split: train           
       columns:
         - chosen
         - rejected
