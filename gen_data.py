@@ -43,4 +43,4 @@ if __name__ == "__main__":
                 "swap_preferences": swaps[j], 
             })
 
-        Dataset.from_list(dataset_next).push_to_hub(args.dataset_next)
+    Dataset.from_list(dataset_next).push_to_hub(args.dataset_next)
