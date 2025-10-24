@@ -13,6 +13,12 @@ dataset_mixture:
       columns:
         - messages
       weight: 1.0
+    - id: lhkhiem28/ultrafeedback-sft-iter2
+      config: default
+      split: train
+      columns:
+        - messages
+      weight: 1.0
   seed: 0
 max_length: 2048
 dataset_num_proc: 16

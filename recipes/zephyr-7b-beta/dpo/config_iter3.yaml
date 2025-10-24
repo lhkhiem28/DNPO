@@ -12,6 +12,13 @@ dataset_mixture:
         - chosen
         - rejected
       weight: 1.0
+    - id: lhkhiem28/ultrafeedback-dpo-iter2
+      config: default
+      split: train           
+      columns:
+        - chosen
+        - rejected
+      weight: 1.0
   seed: 0
 max_prompt_length: 512
 max_length: 1024
