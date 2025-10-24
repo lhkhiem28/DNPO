@@ -8,9 +8,9 @@ import llm_blender
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", type=int)
-    parser.add_argument("--model", type=int)
-    parser.add_argument("--dataset_next", type=int)
+    parser.add_argument("--dataset", type=str)
+    parser.add_argument("--model", type=str)
+    parser.add_argument("--dataset_next", type=str)
     args = parser.parse_args()
 
     dataset = load_dataset(args.dataset)["train_prefs"]
