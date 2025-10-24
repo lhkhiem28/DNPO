@@ -20,7 +20,7 @@ if __name__ == "__main__":
     blender = llm_blender.Blender()
     blender.loadranker("llm-blender/PairRM")
 
-    batch_size = 64
+    batch_size = 128
     for i in tqdm.tqdm(range(0, len(dataset), batch_size)):
         batch = dataset[i:i+batch_size]
         prompts, prompts_id = batch["prompt"], batch["prompt_id"]
