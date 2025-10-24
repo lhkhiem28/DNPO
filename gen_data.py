@@ -8,19 +8,19 @@ import llm_blender
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--iter", type=int)
+    parser.add_argument("--dataset", type=int)
+    parser.add_argument("--model", type=int)
+    parser.add_argument("--dataset_next", type=int)
     args = parser.parse_args()
 
-    dataset = load_dataset(
-        f"lhkhiem28/ultrafeedback-iter{args.iter}"
-    )["train_prefs"]
+    dataset = load_dataset(args.dataset)["train_prefs"]
     dataset_next = []
 
-    generator = LLM(model=f"lhkhiem28/Mistral-7B-Instruct-v0.2-DNPO-iter{args.iter}", tensor_parallel_size=1)
+    generator = LLM(model=args.model, tensor_parallel_size=1)
     blender = llm_blender.Blender()
     blender.loadranker("llm-blender/PairRM")
 
-    batch_size = 32
+    batch_size = 64
     for i in tqdm.tqdm(range(0, len(dataset), batch_size)):
         batch = dataset[i:i+batch_size]
         prompts, prompts_id = batch["prompt"], batch["prompt_id"]
@@ -43,7 +43,4 @@ if __name__ == "__main__":
                 "swap_preferences": swaps[j], 
             })
 
-        Dataset.from_list(dataset_next).push_to_hub(
-            f"lhkhiem28/ultrafeedback-DNPO-iter{args.iter}"
-        )
-        break
+        Dataset.from_list(dataset_next).push_to_hub(args.dataset_next)
