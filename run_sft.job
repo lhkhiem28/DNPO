@@ -3,7 +3,7 @@
 #$ -m be
 #$ -pe smp 16
 #$ -q gpu@@lucy_a100
-#$ -l gpu=2
+#$ -l gpu=4
 #$ -N run_sft
 module load cuda/12.1; conda activate PT
 dos2unix *.sh

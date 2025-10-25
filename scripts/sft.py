@@ -19,7 +19,7 @@ Usage:
 
 # One 1 node of 8 x H100s
 accelerate launch --config_file recipes/accelerate_configs/zero3.yaml scripts/sft.py \
-    --model_name_or_path Qwen/Qwen2.5-1.5B-Instruct \
+    --model_name_or_path Qwen/Qwen2.5-3B-Instruct \
     --dataset_name trl-lib/Capybara \
     --learning_rate 2.0e-5 \
     --num_train_epochs 1 \
